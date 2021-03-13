@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Category } from 'src/app/models/category';
+import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
   selector: 'app-category',
@@ -12,10 +14,43 @@ export class CategoryComponent implements OnInit {
   category3:any= {id:3,categoryName:"Mobilya"}
   category4:any= {id:4,categoryName:"Telefon"}
 
-  categories=[this.category1, this.category2, this.category3,this.category4];
-  constructor() { }
+  categories : Category[]=[];
 
-  ngOnInit(): void {
+  currentCategory:Category;
+  //={categoryId:0,categoryName:""} tsconfig içinde bunu eklemek lazım yoksa fake bir new yapılmalı
+  // "strictPropertyInitialization": false,
+  constructor(private categoryService:CategoryService ) { }
+   ngOnInit(): void {
+    this.getCategories();
+  }
+  getCategories(){
+    this.categoryService.getCategories().subscribe(response=>{
+      this.categories=response.data
+      
+    })
+  }
+  setCurrentCategory(category:Category){
+    this.currentCategory=category;
+  }
+  
+  getCategoryClass(category:Category){
+    if(category==this.currentCategory){
+      return "list-group-item active"
+    }
+    else  {
+      return "list-group-item"
+    }
+  }
+  getAllCategoryClass(){
+    if(!this.currentCategory||this.currentCategory.categoryId==0){
+      return "list-group-item active"
+    }
+    else  {
+      return "list-group-item"
+    }
+  }
+  clearCurrentCategory(){
+    this.currentCategory={categoryId:0,categoryName:""};
   }
 
 }
